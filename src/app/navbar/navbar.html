@@ -1,0 +1,12 @@
+<nav style="display:flex; justify-content:space-between; padding:10px; background:#222; color:white;">
+    <h2>My Store</h2>
+  
+    <app-search-input
+      (searchChange)="onSearchChange($event)">
+    </app-search-input>
+  
+    <div>
+      🛒 Cart: <strong>{{ cartCount }}</strong>
+    </div>
+  </nav>
+  
