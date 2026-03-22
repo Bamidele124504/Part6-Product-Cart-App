@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ErrorHandlerService } from './error-handler';
-
 
 export interface Product {
   id: number;
@@ -17,7 +16,8 @@ export interface Product {
 @Injectable({ providedIn: 'root' })
 export class ProductService {
 
-  private apiUrl = 'http://localhost:3000/products';
+
+  private apiUrl = 'http://localhost:3000/api/v1/products';
 
   constructor(
     private http: HttpClient,
@@ -26,16 +26,24 @@ export class ProductService {
 
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl)
-    .pipe(catchError(this.errorHandler.handleError));
+      .pipe(catchError(this.errorHandler.handleError));
   }
 
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`)
-    .pipe(catchError(this.errorHandler.handleError));
+      .pipe(catchError(this.errorHandler.handleError));
   }
 
   createProduct(product: any): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product)
-    .pipe(catchError(this.errorHandler.handleError));
+
+    
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post<Product>(this.apiUrl, product, { headers })
+      .pipe(catchError(this.errorHandler.handleError));
   }
 }
